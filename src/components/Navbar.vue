@@ -23,17 +23,29 @@
   .navbar {
     font-family "Product Sans", Helvetica, Arial, sans-serif
     background-color #42b983
-    height 50px
-    padding 10px
+    height 60px
+    padding 15px 0
+    border-radius 0
+    border none
+    @media screen and (max-width 767px){
+      height 48px
+      padding 9px 0
+    }
     .brand {
       height: 30px
       width 100px
-      margin auto
+      margin 0
       color white
-      font-size 22px
+      font-size 28px
       line-height 30px
       vertical-align middle
       font-weight 200
+      text-align left
+      @media screen and (max-width: 767px){
+        margin auto
+        text-align center
+        font-size 24px
+      }
     }
   }
 

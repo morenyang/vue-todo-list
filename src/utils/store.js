@@ -9,5 +9,8 @@ export default {
   },
   save(items){
     window.localStorage.setItem(STORAGE_KET, JSON.stringify(items))
+  },
+  clear(){
+    window.localStorage.removeItem(STORAGE_KET)
   }
 }
