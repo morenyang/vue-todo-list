@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A todo list",
   "author": "MorenYANG <yangteng@me.com>",
-  "private": true,
+  "private": false,
+  "repository": "https://github.com/morenyang/vue-todo-list",
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js"
