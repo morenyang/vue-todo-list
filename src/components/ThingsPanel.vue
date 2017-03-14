@@ -8,8 +8,11 @@
         <div class="inner-card">
           <input-panel @pushNewThing="pushHandle" :blank="(things.length == 0)"></input-panel>
           <ul class="things-list" v-if="(things.length != 0)">
-            <item-card v-for="item in things" :thing="item" :key="item.createDate" @thingFinish="finishHandle"
-                       @thingDelete="deleteHandle"></item-card>
+            <item-card v-for="item in things" :thing="item" :key="item.createDate"
+                       @thingFinish="finishHandle"
+                       @thingDelete="deleteHandle"
+                       @thingStar="starHandle"
+            ></item-card>
           </ul>
           <control-panel v-if="(things.length != 0)" :remainCount="remaining"></control-panel>
         </div>
@@ -60,6 +63,9 @@
       },
       deleteHandle(thing){
         this.things.splice(this.things.indexOf(thing), 1)
+      },
+      starHandle(thing){
+        thing.star = !thing.star
       }
     },
 

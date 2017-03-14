@@ -1,7 +1,11 @@
 <template>
   <li :class="['todo-thing', {finished: thing.isFinished}]">
     <input class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <span class="thing-label">{{thing.label}}</span>
+    <label :class="['thing-label', {star: thing.star}]"
+           @dblclick="editHandle"
+           @click="starHandle">
+      {{thing.label}}
+    </label>
     <button class="thing-delete" @click="deleteHandle"></button>
   </li>
 </template>
@@ -16,11 +20,16 @@
     props: ['thing'],
     methods: {
       finishHandle(){
-        this.$emit('thingFinish', this.thing);
-//        this.thing.isFinished = !this.thing.isFinished
+        this.$emit('thingFinish', this.thing)
       },
       deleteHandle(){
-          this.$emit('thingDelete', this.thing)
+        this.$emit('thingDelete', this.thing)
+      },
+      editHandle(){
+
+      },
+      starHandle(){
+        this.$emit('thingStar', this.thing)
       }
     }
   }
@@ -31,10 +40,9 @@
     color #2c3e50
     width 100%
     background white
-  //box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
     padding 15px 0
     border none
-    height 64px
+    min-height 64px
     .thing-checkbox {
       padding 12px 0
       text-align: center;
@@ -50,33 +58,43 @@
       appearance: none;
       display block
       user-select text
-      writing-mode horizontal-tb
+      /*writing-mode horizontal-tb*/
       outline none !important
       &:after {
         content url("../assets/img/checkbox.svg")
       }
-      &:checked:after {
-        content: url("../assets/img/checkbox_checked.svg")
+      &:checked {
+        background white !important
+        &:after {
+          content: url("../assets/img/checkbox_checked.svg")
+        }
       }
     }
     .thing-label {
-      margin-left 55px
+      margin -15px 0
+      padding 20px 50px 20px 55px
       font-size 24px
-      line-height 34px
+      line-height 24px
       vertical-align middle
+      width 100%
+      font-weight 400
       @media screen and (max-width 767px) {
         font-size 20px
+      }
+      &.star {
+          color #42b983
+          font-weight 700
       }
     }
     .thing-delete {
       position absolute
       color #af5b5e
-      top: 0
+      top: -5px
       right: 10px;
       bottom: 0;
-      width: 40px;
+      width: 30px;
       height: 64px;
-      margin: -3px 0 auto;
+      margin: auto 0;
       font-size: 30px;
       line-height 1.0
       vertical-align top
@@ -86,7 +104,10 @@
       font-family "Roboto", Helvetica, Arial, sans-serif
       padding 0
       outline none
-      display none
+      @media screen and (min-width 640px) {
+        display none
+        right 15px
+      }
       &:after {
         content: '×'
       }
