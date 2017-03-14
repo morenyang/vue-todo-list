@@ -6,15 +6,21 @@
           {{title}}
         </div>
         <div class="inner-card">
-          <input-panel @pushNewThing="pushHandle" :blank="(things.length == 0)"></input-panel>
+          <input-panel @pushNewThing="pushHandle" :blank="(filters.length == 0)"></input-panel>
           <ul class="things-list" v-if="(things.length != 0)">
-            <item-card v-for="item in things" :thing="item" :key="item.createDate"
+            <item-card v-for="item in filters"
+                       :thing="item"
+                       :key="item.createDate"
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
             ></item-card>
           </ul>
-          <control-panel v-if="(things.length != 0)" :remainCount="remaining"></control-panel>
+          <control-panel v-if="(things.length != 0)"
+                         :remainCount="remaining"
+                         :card="card"
+                         @cardToggle="cardToggleHandle"
+          ></control-panel>
         </div>
         <!--<button @click="clearHandle">clear</button>-->
       </div>
@@ -28,7 +34,7 @@
    */
 
   import Store from '../utils/store'
-  import Couter from '../utils/counter'
+  import Filters from '../utils/filters'
 
   import InputPanel from './InputPanel'
   import ItemCard from './ItemCard'
@@ -46,13 +52,15 @@
     data(){
       return {
         title: 'remember to',
-        things: Store.fetch() || []
+        things: Store.fetch() || [],
+        card: 'all'
       }
     },
 
     methods: {
       pushHandle(thing){
         this.things.push(thing);
+        (this.card == 'all' || this.card == 'active') ? void(0) : this.card = 'all'
       },
       clearHandle(){
         Store.clear();
@@ -66,6 +74,9 @@
       },
       starHandle(thing){
         thing.star = !thing.star
+      },
+      cardToggleHandle(prop){
+        this.card = prop
       }
     },
 
@@ -75,12 +86,16 @@
           Store.save(things)
         },
         deep: true
-      }
+      },
+
     },
 
     computed: {
       remaining(){
-        return Couter.remaining(this.things).length
+        return Filters.remaining(this.things).length
+      },
+      filters(){
+        return Filters[this.card](this.things)
       }
     }
   }
@@ -121,6 +136,8 @@
     padding 0
     margin 0
     border-top: 1px solid #e6e6e6;
+    transition-duration .3s
+    transition-timing-function ease-in-out
     & li {
       position: relative;
       font-size: 24px;
