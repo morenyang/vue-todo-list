@@ -1,9 +1,7 @@
 <template>
   <div class="things-input">
-    <div class="title">
-      {{title}}
-    </div>
-    <input v-model="label" @keyup.enter="addNew" id="main-input"/>
+    <input v-model="label" @keyup.enter="addNew" id="main-input" type="text" maxlength="20"
+           :placeholder="placeholder"/>
   </div>
 </template>
 
@@ -16,7 +14,7 @@
     name: 'App',
     data () {
       return {
-        title: 'remember to',
+        placeholder: 'do your homework',
         thing: {},
         label: ''
       }
@@ -39,36 +37,45 @@
   }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus" >
+  font-roboto = "Roboto", Helvetica, Arial, sans-serif
   .things-input {
-    margin 10px 0 20px
+    margin 10px 0 0
     width 100%
-    @media screen and (max-width 767px){
+    @media screen and (max-width 767px) {
       margin-top 5px
-    }
-    .title{
-      font-size 54px
-      line-height 1
     }
     #main-input {
       color #2c3e50
       width 100%
-      border 1px solid #eee
-      height 60px
-      padding 16px 14px
+      border none
+      height 64px
+      padding 18px 10px 18px 55px
       font-size 24px
-      line-height 26px
-      vertical-align middle
+      line-height 24px
+      vertical-align bottom
       outline none
-      box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
-      border-radius 2px
+      //box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
+      box-shadow inset 0 -2px 1px rgba(0,0,0,0.03)
+      border-radius 1px
       -webkit-appearance: none
       transition-property box-shadow
       transition-duration .2s
       transition-timing-function ease-in-out
-      &:focus {
-        box-shadow 0 3px 8px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08)
+      &::-webkit-input-placeholder{
+        vertical-align bottom
+        font-size 24px
+        line-height 30px
+        font-family font-roboto
+        font-weight 100
+        color #ddd
       }
+      /*@media screen and (max-width 767px) {*/
+        /*height 48px*/
+        /*font-size 20px*/
+        /*line-height 20px*/
+        /*padding 13px*/
+      /*}*/
     }
   }
 </style>
