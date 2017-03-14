@@ -6,10 +6,12 @@
           {{title}}
         </div>
         <div class="inner-card">
-          <things-input @pushNewThing="pushHandle"></things-input>
-          <ul :class="['things-list', {hidden: things.length == 0}]">
-            <item-card v-for="item in things" :thing="item" :key="item.createDate" @thingFinish="finishHandle" @thingDelete="deleteHandle"></item-card>
+          <input-panel @pushNewThing="pushHandle" :blank="(things.length == 0)"></input-panel>
+          <ul class="things-list" v-if="(things.length != 0)">
+            <item-card v-for="item in things" :thing="item" :key="item.createDate" @thingFinish="finishHandle"
+                       @thingDelete="deleteHandle"></item-card>
           </ul>
+          <control-panel v-if="(things.length != 0)" :remainCount="remaining"></control-panel>
         </div>
         <!--<button @click="clearHandle">clear</button>-->
       </div>
@@ -23,16 +25,19 @@
    */
 
   import Store from '../utils/store'
+  import Couter from '../utils/counter'
 
-  import ThingsInput from './Input'
+  import InputPanel from './InputPanel'
   import ItemCard from './ItemCard'
+  import ControlPanel from './ControlPanel.vue'
 
   export default{
     name: 'thingsPanel',
 
     components: {
-      ThingsInput,
-      ItemCard
+      InputPanel,
+      ItemCard,
+      ControlPanel
     },
 
     data(){
@@ -51,10 +56,10 @@
         this.things = [];
       },
       finishHandle(thing){
-          thing.isFinished = !thing.isFinished
+        thing.isFinished = !thing.isFinished
       },
       deleteHandle(thing){
-          this.things.splice(this.things.indexOf(thing), 1)
+        this.things.splice(this.things.indexOf(thing), 1)
       }
     },
 
@@ -64,6 +69,12 @@
           Store.save(things)
         },
         deep: true
+      }
+    },
+
+    computed: {
+      remaining(){
+        return Couter.remaining(this.things).length
       }
     }
   }
@@ -102,6 +113,7 @@
   .things-list {
     list-style none
     padding 0
+    margin 0
     border-top: 1px solid #e6e6e6;
     & li {
       position: relative;

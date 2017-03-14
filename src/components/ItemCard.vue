@@ -48,16 +48,15 @@
       border: none; /* Mobile Safari */
       -webkit-appearance: none;
       appearance: none;
-      color black
       display block
       user-select text
       writing-mode horizontal-tb
       outline none !important
       &:after {
-        content url("../assets/checkbox.svg")
+        content url("../assets/img/checkbox.svg")
       }
       &:checked:after {
-        content: url("../assets/checkbox_checked.svg")
+        content: url("../assets/img/checkbox_checked.svg")
       }
     }
     .thing-label {
@@ -95,7 +94,6 @@
     &.finished {
       .thing-label {
         color #ededed
-
       }
     }
     &:hover > .thing-delete {

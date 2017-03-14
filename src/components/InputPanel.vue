@@ -1,5 +1,5 @@
 <template>
-  <div class="things-input">
+  <div :class="['things-input',{blank: blank}]">
     <input v-model="label" @keyup.enter="addNew" id="main-input" type="text" maxlength="20"
            :placeholder="placeholder"/>
   </div>
@@ -12,6 +12,9 @@
 
   export default{
     name: 'App',
+    props: [
+      'blank'
+    ],
     data () {
       return {
         placeholder: 'do your homework',
@@ -37,13 +40,16 @@
   }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" >
+<style lang="stylus" rel="stylesheet/stylus">
   font-roboto = "Roboto", Helvetica, Arial, sans-serif
   .things-input {
     margin 10px 0 0
     width 100%
     @media screen and (max-width 767px) {
       margin-top 5px
+    }
+    &.blank > #main-input {
+      padding-left 15px
     }
     #main-input {
       color #2c3e50
@@ -55,14 +61,14 @@
       line-height 24px
       vertical-align bottom
       outline none
-      //box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
-      box-shadow inset 0 -2px 1px rgba(0,0,0,0.03)
+    //box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
+      box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
       border-radius 1px
       -webkit-appearance: none
-      transition-property box-shadow
-      transition-duration .2s
+      transition-property padding
+      transition-duration .3s
       transition-timing-function ease-in-out
-      &::-webkit-input-placeholder{
+      &::-webkit-input-placeholder {
         vertical-align bottom
         font-size 24px
         line-height 30px
@@ -71,10 +77,10 @@
         color #ddd
       }
       /*@media screen and (max-width 767px) {*/
-        /*height 48px*/
-        /*font-size 20px*/
-        /*line-height 20px*/
-        /*padding 13px*/
+      /*height 48px*/
+      /*font-size 20px*/
+      /*line-height 20px*/
+      /*padding 13px*/
       /*}*/
     }
   }
