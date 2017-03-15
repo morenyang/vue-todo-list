@@ -9,7 +9,8 @@
           <input-panel @pushNewThing="pushHandle"
                        :blank="(filters.length == 0)"
                        :placeholder="placeholder"
-                       @placeholderChanger="placeholderChanger"></input-panel>
+                       @placeholderChanger="placeholderChanger"
+          ></input-panel>
           <ul :class="['things-list', {editing : this.editing}]" v-if="(things.length != 0)">
             <item-card v-for="item in filters"
                        :thing="item"
@@ -71,7 +72,6 @@
       pushHandle(thing){
         this.things.push(thing);
         (this.card == 'all' || this.card == 'active') ? void(0) : this.card = 'all';
-        this.placeholderChanger();
       },
       clearHandle(){
         Store.clear();
@@ -146,6 +146,10 @@
     font-family "Roboto", Helvetica, Arial, sans-serif
     font-weight 100
     color #2c3e50
+    user-select none
+    -webkit-user-select none
+    -moz-user-select none
+    -ms-user-select none
     @media screen and (max-width 767px) {
       font-size 40px
       margin-bottom 5px

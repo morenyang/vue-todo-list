@@ -108,6 +108,7 @@
         }
       }
       @media screen and (max-width 767px) {
+        font-size 18px
         position relative
         margin 5px 0
         text-align left

@@ -3,8 +3,10 @@
  */
 
 let TodoBanner = [
-  'Don\'t forget to',
-  'Remember to'
+  'Don\'t forget',
+  'Remember',
+  'Keep in mind that',
+  'Bear in mind that'
 ];
 
 let StarBanner = [
@@ -23,7 +25,14 @@ let Things = [
   'bring the keys',
   'charge your phone',
   'missing me',
-  'buy tickets for Taylor Swift\'s concert'
+  'buy tickets for Taylor Swift\'s concert',
+  'give Anna a ring',
+  'the time the plane took off',
+  'buy the latest magazines',
+  'reply to Alice',
+  'give York back to SMS',
+  'go to the dentist on weekends',
+  'turn off the lights'
 ];
 
 export default {

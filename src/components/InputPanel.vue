@@ -25,6 +25,7 @@
     },
     methods: {
       addNew(){
+        this.placeholderChanger();
         let label = this.label;
         if (label == '') return;
         this.thing = {
@@ -41,11 +42,6 @@
         this.$emit('placeholderChanger', null)
       }
     },
-//    computed: {
-//      placeholder(){
-//        return Banners.things()
-//      }
-//    }
   }
 </script>
 
@@ -78,7 +74,7 @@
       transition-property padding
       transition-duration .3s
       transition-timing-function ease-in-out
-      @media screen and (max-width 767px){
+      @media screen and (max-width 767px) {
         font-size 20px
         padding-left 45px
       }

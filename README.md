@@ -1,8 +1,11 @@
 # vue-todo-list
 
-> A todo list
+> A simplify todo list
 
-## Build Setup
+## License
+MIT
+
+### Build Setup
 
 ``` bash
 # install dependencies

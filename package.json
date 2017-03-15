@@ -1,6 +1,6 @@
 {
   "name": "vue-todo-list",
-  "version": "1.0.0",
+  "version": "0.3.2",
   "description": "A todo list",
   "author": "MorenYANG <yangteng@me.com>",
   "private": false,
