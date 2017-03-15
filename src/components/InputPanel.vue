@@ -1,7 +1,7 @@
 <template>
   <div :class="['things-input',{blank: blank}]">
     <input v-model="label" @keyup.enter="addNew" id="main-input" type="text" maxlength="20"
-           :placeholder="placeholder"/>
+           :placeholder="placeholder" @dblclick="placeholderChanger"/>
   </div>
 </template>
 
@@ -9,15 +9,16 @@
   /**
    * Created by MorenYang on 2017/3/13.
    */
+//  import Banners from '../utils/banners';
 
   export default{
     name: 'App',
     props: [
-      'blank'
+      'blank',
+      'placeholder'
     ],
     data () {
       return {
-        placeholder: 'do your homework',
         thing: {},
         label: ''
       }
@@ -35,8 +36,16 @@
         };
         this.$emit('pushNewThing', this.thing);
         this.label = '';
+      },
+      placeholderChanger(){
+        this.$emit('placeholderChanger', null)
       }
-    }
+    },
+//    computed: {
+//      placeholder(){
+//        return Banners.things()
+//      }
+//    }
   }
 </script>
 
@@ -76,12 +85,6 @@
         font-weight 100
         color #ddd
       }
-      /*@media screen and (max-width 767px) {*/
-      /*height 48px*/
-      /*font-size 20px*/
-      /*line-height 20px*/
-      /*padding 13px*/
-      /*}*/
     }
   }
 </style>

@@ -2,11 +2,14 @@
   <div class="things-panel">
     <div class="container">
       <div class="layout">
-        <div class="title">
-          {{title}}
+        <div class="title" @click="bannerChanger">
+          {{banner}}
         </div>
         <div class="inner-card">
-          <input-panel @pushNewThing="pushHandle" :blank="(filters.length == 0)"></input-panel>
+          <input-panel @pushNewThing="pushHandle"
+                       :blank="(filters.length == 0)"
+                       :placeholder="placeholder"
+                       @placeholderChanger="placeholderChanger"></input-panel>
           <ul class="things-list" v-if="(things.length != 0)">
             <item-card v-for="item in filters"
                        :thing="item"
@@ -17,12 +20,13 @@
             ></item-card>
           </ul>
           <control-panel v-if="(things.length != 0)"
-                         :remainCount="remaining"
+                         :remaining="remaining"
                          :card="card"
+                         :stars="stars"
+                         :filters="filters.length"
                          @cardToggle="cardToggleHandle"
           ></control-panel>
         </div>
-        <!--<button @click="clearHandle">clear</button>-->
       </div>
     </div>
   </div>
@@ -35,6 +39,7 @@
 
   import Store from '../utils/store'
   import Filters from '../utils/filters'
+  import Banners from '../utils/banners'
 
   import InputPanel from './InputPanel'
   import ItemCard from './ItemCard'
@@ -53,14 +58,17 @@
       return {
         title: 'remember to',
         things: Store.fetch() || [],
-        card: 'all'
+        card: 'all',
+        banner: Banners.banner(this.card || 'all') || 'Remember',
+        placeholder: Banners.things() || 'missing me'
       }
     },
 
     methods: {
       pushHandle(thing){
         this.things.push(thing);
-        (this.card == 'all' || this.card == 'active') ? void(0) : this.card = 'all'
+        (this.card == 'all' || this.card == 'active') ? void(0) : this.card = 'all';
+        this.placeholderChanger();
       },
       clearHandle(){
         Store.clear();
@@ -77,6 +85,12 @@
       },
       cardToggleHandle(prop){
         this.card = prop
+      },
+      bannerChanger(){
+        this.banner = Banners.banner(this.card || 'all') || 'Remember'
+      },
+      placeholderChanger(){
+        this.placeholder = Banners.things()
       }
     },
 
@@ -87,12 +101,17 @@
         },
         deep: true
       },
-
+      card(){
+        this.bannerChanger();
+      }
     },
 
     computed: {
       remaining(){
         return Filters.remaining(this.things).length
+      },
+      stars(){
+        return Filters.star(this.things).length
       },
       filters(){
         return Filters[this.card](this.things)

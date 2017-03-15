@@ -1,6 +1,6 @@
 <template>
   <div class="control-panel">
-    <span class="things-count">{{remainCount}} {{pluralize}} left</span>
+    <span class="things-count">{{counts}} {{pluralize}} left</span>
     <ul class="card-toggle">
       <li @click="cardToggle(0)" :class="{active: (card == 'all')}">All</li>
       <li @click="cardToggle(1)" :class="{active: (card == 'active')}">Active</li>
@@ -18,7 +18,7 @@
   export default{
     name: 'controlPanel',
 
-    props: ['remainCount', 'card'],
+    props: ['remaining', 'card', 'stars'],
 
     methods: {
       cardToggle(index){
@@ -42,8 +42,11 @@
     },
 
     computed: {
+      counts(){
+        return this.card == 'star' ? this.stars : this.remaining
+      },
       pluralize(){
-        return parseInt(this.remainCount) <= 1 ? 'item' : 'items'
+        return this.card == 'star' ? parseInt(this.stars) <= 1 ? 'star' : 'stars' : parseInt(this.remaining) <= 1 ? 'item' : 'items'
       }
     }
   }
@@ -59,7 +62,7 @@
     font-weight 100
     font-size 16px
     font-family "Roboto", Helvetica, Arial, sans-serif
-    .things-count{
+    .things-count {
       color #777
     }
     .card-toggle {
