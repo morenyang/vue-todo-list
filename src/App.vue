@@ -7,9 +7,10 @@
 </template>
 
 <script>
-  import './assets/js/jquery.min'
-  import './assets/js/bootstrap.min'
+  //  import './assets/js/jquery.min'
+  //  import './assets/js/bootstrap.min'
   import './assets/stylesheets/bootstrap.min.css'
+  import "./assets/stylesheets/fonts.css"
 
   import Navbar from './components/Navbar'
   import ThingsPanel from './components/ThingsPanel'
@@ -24,7 +25,6 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  @import "assets/stylesheets/fonts.css"
   /*#app {*/
   /*font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
   /*-webkit-font-smoothing: antialiased;*/

@@ -1,6 +1,9 @@
 <template>
   <div class="control-panel">
-    <span class="things-count">{{counts}} {{pluralize}} left</span>
+    <div class="control-panel-layout">
+      <span class="things-count">{{counts}} {{pluralize}} left</span>
+      <span class="things-edit" @click="editStatusHandle" v-show="filters != 0">{{editStatus}}</span>
+    </div>
     <ul class="card-toggle">
       <li @click="cardToggle(0)" :class="{active: (card == 'all')}">All</li>
       <li @click="cardToggle(1)" :class="{active: (card == 'active')}">Active</li>
@@ -18,7 +21,7 @@
   export default{
     name: 'controlPanel',
 
-    props: ['remaining', 'card', 'stars'],
+    props: ['remaining', 'card', 'stars', 'editing','filters'],
 
     methods: {
       cardToggle(index){
@@ -38,6 +41,9 @@
           default:
             this.$emit('cardToggle', 'all')
         }
+      },
+      editStatusHandle(){
+        this.$emit('editStatusHandle', this.editing)
       }
     },
 
@@ -47,6 +53,9 @@
       },
       pluralize(){
         return this.card == 'star' ? parseInt(this.stars) <= 1 ? 'star' : 'stars' : parseInt(this.remaining) <= 1 ? 'item' : 'items'
+      },
+      editStatus(){
+        return this.editing ? 'Done' : 'Edit';
       }
     }
   }
@@ -62,8 +71,20 @@
     font-weight 100
     font-size 16px
     font-family "Roboto", Helvetica, Arial, sans-serif
+    .control-panel-layout {
+      width 100%
+    }
     .things-count {
       color #777
+    }
+    .things-edit {
+      float right
+      color #777
+      z-index 3
+      display none
+      @media screen and (max-width 767px) {
+        display block
+      }
     }
     .card-toggle {
       margin: -22px 0;
@@ -73,6 +94,7 @@
       right: 0;
       left: 0;
       text-align center
+      z-index 2
       & > li {
         line-height 22px
         height 22px
@@ -83,6 +105,16 @@
         &.active {
           color #42b983
           font-weight 700
+        }
+      }
+      @media screen and (max-width 767px) {
+        position relative
+        margin 5px 0
+        text-align left
+        & > li {
+          &:first-child {
+            margin-left: 0
+          }
         }
       }
     }

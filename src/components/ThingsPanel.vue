@@ -10,7 +10,7 @@
                        :blank="(filters.length == 0)"
                        :placeholder="placeholder"
                        @placeholderChanger="placeholderChanger"></input-panel>
-          <ul class="things-list" v-if="(things.length != 0)">
+          <ul :class="['things-list', {editing : this.editing}]" v-if="(things.length != 0)">
             <item-card v-for="item in filters"
                        :thing="item"
                        :key="item.createDate"
@@ -24,7 +24,9 @@
                          :card="card"
                          :stars="stars"
                          :filters="filters.length"
+                         :editing="editing"
                          @cardToggle="cardToggleHandle"
+                         @editStatusHandle="editStatusHandle"
           ></control-panel>
         </div>
       </div>
@@ -60,7 +62,8 @@
         things: Store.fetch() || [],
         card: 'all',
         banner: Banners.banner(this.card || 'all') || 'Remember',
-        placeholder: Banners.things() || 'missing me'
+        placeholder: Banners.things() || 'missing me',
+        editing: false
       }
     },
 
@@ -91,6 +94,9 @@
       },
       placeholderChanger(){
         this.placeholder = Banners.things()
+      },
+      editStatusHandle(){
+        this.editing = !this.editing
       }
     },
 
@@ -161,9 +167,17 @@
       position: relative;
       font-size: 24px;
       border-bottom: 1px solid #ededed;
+
     }
     & li:last-child {
       border-bottom: none;
+    }
+    &.editing > li {
+      @media screen and (max-width 767px) {
+        .thing-delete {
+          display block
+        }
+      }
     }
   }
 

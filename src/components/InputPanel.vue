@@ -54,6 +54,7 @@
   .things-input {
     margin 10px 0 0
     width 100%
+    font-family "Helvetica Neue", "SF Pro SC", "HanHei SC", "PingFang SC", Helvetica, Arial, sans-serif
     @media screen and (max-width 767px) {
       margin-top 5px
     }
@@ -77,9 +78,12 @@
       transition-property padding
       transition-duration .3s
       transition-timing-function ease-in-out
+      @media screen and (max-width 767px){
+        font-size 20px
+        padding-left 45px
+      }
       &::-webkit-input-placeholder {
-        vertical-align bottom
-        font-size 24px
+        vertical-align middle
         line-height 30px
         font-family font-roboto
         font-weight 100

@@ -48,7 +48,8 @@
       text-align: center;
       width: 50px;
       /* auto, since non-WebKit browsers doesn't support input styling */
-      height: 64px
+      height 64px
+      /*height inherit*/
       position absolute
       top 0
       bottom 0
@@ -60,30 +61,42 @@
       user-select text
       /*writing-mode horizontal-tb*/
       outline none !important
+      @media screen and (max-width 767px) {
+        padding 17px 0
+        width 40px
+      }
       &:after {
         content url("../assets/img/checkbox.svg")
+        @media screen and (max-width 767px) {
+          content url("../assets/img/sm_checkbox.svg")
+        }
       }
       &:checked {
         background white !important
         &:after {
           content: url("../assets/img/checkbox_checked.svg")
+          @media screen and (max-width 767px) {
+            content url("../assets/img/sm_checkbox_checked.svg")
+          }
         }
       }
     }
     .thing-label {
       margin -15px 0
-      padding 20px 50px 20px 55px
+      padding 15px 50px 15px 55px
       font-size 24px
-      line-height 24px
+      line-height 34px
       vertical-align middle
       width 100%
       font-weight 400
+      font-family "Helvetica Neue", "SF Pro SC", "HanHei SC", "PingFang SC", Helvetica, Arial, sans-serif
       @media screen and (max-width 767px) {
         font-size 20px
+        padding-left 45px
       }
       &.star {
-          color #42b983
-          font-weight 700
+        color #42b983
+        font-weight 700
       }
     }
     .thing-delete {
@@ -104,8 +117,8 @@
       font-family "Roboto", Helvetica, Arial, sans-serif
       padding 0
       outline none
+      display none
       @media screen and (min-width 640px) {
-        display none
         right 15px
       }
       &:after {
@@ -119,6 +132,9 @@
     }
     &:hover > .thing-delete {
       display block
+      @media screen and (max-width 767px) {
+        display none
+      }
     }
   }
 </style>
