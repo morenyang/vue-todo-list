@@ -1,6 +1,6 @@
 <template>
   <!--<h1>{{ msg }}</h1>-->
-  <header class="navbar">
+  <header class="navbar navbar-fixed-top">
     <div class="container">
       <div class="brand">
         todos
@@ -22,11 +22,12 @@
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   .navbar {
     font-family "Product Sans", Helvetica, Arial, sans-serif
-    background-color #42b983
+    background-color white
     height 60px
     padding 15px 0
     border-radius 0
     border none
+    box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
     @media screen and (max-width 767px){
       height 48px
       padding 9px 0
@@ -35,7 +36,7 @@
       height: 30px
       width 100px
       margin 0
-      color white
+      color #42b983
       font-size 28px
       line-height 30px
       vertical-align middle

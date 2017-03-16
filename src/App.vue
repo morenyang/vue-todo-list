@@ -2,6 +2,7 @@
   <div id="app">
     <navbar></navbar>
     <things-panel></things-panel>
+    <footer-panel></footer-panel>
   </div>
 </template>
 
@@ -11,12 +12,14 @@
 
   import Navbar from './components/Navbar'
   import ThingsPanel from './components/ThingsPanel'
+  import FooterPanel from './components/FooterPanel.vue'
 
   export default {
     name: 'app',
     components: {
       Navbar,
-      ThingsPanel
+      ThingsPanel,
+      FooterPanel
     },
   }
 </script>
@@ -34,6 +37,7 @@
     min-height 100vh
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color #f4f4f4
     #app
       font-family: 'Avenir', Helvetica, Arial, sans-serif
       color: #2c3e50

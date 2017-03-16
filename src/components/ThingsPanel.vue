@@ -127,15 +127,21 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .layout {
-    width 640px
-    margin 30px auto 0
-    @media screen and (max-width: 767px) {
-      margin-top 5px
-      width 640px
+  .things-panel {
+    padding 60px 0 0
+    @media screen and (max-width 767px) {
+      padding 50px 0 10px
     }
-    @media screen and (max-width 639px) {
-      width 100%
+    .layout {
+      width 640px
+      margin 30px auto 0
+      @media screen and (max-width: 767px) {
+        margin-top 5px
+        width 640px
+      }
+      @media screen and (max-width 640px) {
+        width 100%
+      }
     }
   }
 

@@ -67,7 +67,6 @@
       line-height 24px
       vertical-align bottom
       outline none
-    //box-shadow 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
       border-radius 1px
       -webkit-appearance: none
