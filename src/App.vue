@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="todo">
     <navbar></navbar>
     <things-panel></things-panel>
     <footer-panel></footer-panel>
