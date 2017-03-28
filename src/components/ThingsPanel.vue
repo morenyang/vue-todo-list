@@ -2,25 +2,25 @@
   <div class="things-panel">
     <div class="container">
       <div class="layout">
-        <div class="title" @click="bannerChanger">
-          {{banner}}
-        </div>
+        <div class="title" @click="bannerChanger">{{ banner }}</div>
         <div class="inner-card">
           <input-panel @pushNewThing="pushHandle"
-                       :blank="(filters.length == 0)"
+                       :blank="(filters.length === 0)"
                        :placeholder="placeholder"
                        @placeholderChanger="placeholderChanger"
           ></input-panel>
-          <ul :class="['things-list', {editing : this.editing}]" v-if="(things.length != 0)">
+          <transition-group :class="['things-list', {editing : this.editing}]" v-if="(things.length !== 0)"
+                            name="list" tag="ul">
             <item-card v-for="item in filters"
                        :thing="item"
-                       :key="item.createDate"
+                       :key="item"
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
+                       class="list-item"
             ></item-card>
-          </ul>
-          <control-panel v-if="(things.length != 0)"
+          </transition-group>
+          <control-panel v-if="(things.length !== 0)"
                          :remaining="remaining"
                          :card="card"
                          :stars="stars"
@@ -57,13 +57,19 @@
       ControlPanel
     },
 
+    beforeMount(){
+      this.things = Store.fetch() || [];
+      this.banner = Banners.banner(this.card || 'all') || 'Remember';
+      this.placeholder = Banners.things() || 'missing me'
+    },
+
     data(){
       return {
         title: 'remember to',
-        things: Store.fetch() || [],
+        things: [],
         card: 'all',
-        banner: Banners.banner(this.card || 'all') || 'Remember',
-        placeholder: Banners.things() || 'missing me',
+        banner: '',
+        placeholder: '',
         editing: false
       }
     },
@@ -71,7 +77,7 @@
     methods: {
       pushHandle(thing){
         this.things.push(thing);
-        (this.card == 'all' || this.card == 'active') ? void(0) : this.card = 'all';
+        (this.card === 'all' || this.card === 'active') ? void(0) : this.card = 'all';
       },
       clearHandle(){
         Store.clear();
@@ -190,5 +196,26 @@
       }
     }
   }
+
+  .list-enter-active {
+    transition: margin-top .3s;
+  }
+
+  .list-enter {
+    opacity: 0;
+    transform: translateY(-64px);
+    margin-top -64px
+  }
+
+  .list-leave-active {
+    transition margin-top .3s;
+    margin-top: -64px
+    opacity 0
+  }
+
+  .list-move {
+    transition: transform .5s;
+  }
+
 
 </style>

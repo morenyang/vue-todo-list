@@ -1,5 +1,5 @@
 <template>
-  <li :class="['todo-thing', {finished: thing.isFinished}]">
+  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
     <input class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
     <label :class="['thing-label', {star: thing.star}]"
            @dblclick="editHandle"
