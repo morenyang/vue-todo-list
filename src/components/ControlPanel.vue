@@ -1,14 +1,14 @@
 <template>
   <div class="control-panel">
     <div class="control-panel-layout">
-      <span class="things-count">{{counts}} {{pluralize}} left</span>
-      <span class="things-edit" @click="editStatusHandle" v-show="filters != 0">{{editStatus}}</span>
+      <span class="things-count">{{ counts }} {{ pluralize }} left</span>
+      <span class="things-edit" @click="editStatusHandle" v-show="filters !== 0">{{ editStatus }}</span>
     </div>
     <ul class="card-toggle">
-      <li @click="cardToggle(0)" :class="{active: (card == 'all')}">All</li>
-      <li @click="cardToggle(1)" :class="{active: (card == 'active')}">Active</li>
-      <li @click="cardToggle(2)" :class="{active: (card == 'star')}">Star</li>
-      <li @click="cardToggle(3)" :class="{active: (card == 'completed')}">Completed</li>
+      <li @click="cardToggle(0)" :class="{active: (card === 'all')}">All</li>
+      <li @click="cardToggle(1)" :class="{active: (card === 'active')}">Active</li>
+      <li @click="cardToggle(2)" :class="{active: (card === 'star')}">Star</li>
+      <li @click="cardToggle(3)" :class="{active: (card === 'completed')}">Completed</li>
     </ul>
   </div>
 </template>
@@ -49,10 +49,10 @@
 
     computed: {
       counts(){
-        return this.card == 'star' ? this.stars : this.remaining
+        return this.card === 'star' ? this.stars : this.remaining
       },
       pluralize(){
-        return this.card == 'star' ? parseInt(this.stars) <= 1 ? 'star' : 'stars' : parseInt(this.remaining) <= 1 ? 'item' : 'items'
+        return this.card === 'star' ? parseInt(this.stars) <= 1 ? 'star' : 'stars' : parseInt(this.remaining) <= 1 ? 'item' : 'items'
       },
       editStatus(){
         return this.editing ? 'Done' : 'Edit';

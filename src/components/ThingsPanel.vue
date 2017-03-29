@@ -59,8 +59,8 @@
 
     beforeMount(){
       this.things = Store.fetch() || [];
-      this.banner = Banners.banner(this.card || 'all') || 'Remember';
-      this.placeholder = Banners.things() || 'missing me'
+      this.bannerChanger();
+      this.placeholderChanger();
     },
 
     data(){
