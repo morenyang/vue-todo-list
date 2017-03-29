@@ -27,7 +27,7 @@
       addNew(){
         this.placeholderChanger();
         let label = this.label;
-        if (label == '') return;
+        if (label === '') return;
         this.thing = {
           label: label,
           isFinished: false,

@@ -47,6 +47,7 @@
       padding 12px 0
       text-align: center;
       width: 50px;
+      box-sizing border-box !important
       /* auto, since non-WebKit browsers doesn't support input styling */
       height 64px
       /*height inherit*/

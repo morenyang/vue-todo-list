@@ -13,7 +13,7 @@
                             name="list" tag="ul">
             <item-card v-for="item in filters"
                        :thing="item"
-                       :key="item"
+                       :key="item.createDate"
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
@@ -198,7 +198,7 @@
   }
 
   .list-enter-active {
-    transition: margin-top .3s;
+    transition: margin-top .3s ease-in-out;
   }
 
   .list-enter {
@@ -208,13 +208,13 @@
   }
 
   .list-leave-active {
-    transition margin-top .3s;
+    transition margin-top .3s ease-in-out;
     margin-top: -64px
     opacity 0
   }
 
   .list-move {
-    transition: transform .5s;
+    transition: transform .4s ease-in-out;
   }
 
 
