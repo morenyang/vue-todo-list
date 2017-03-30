@@ -10,7 +10,7 @@
     </v-touch>
     <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
            @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
-    <button class="thing-delete" @click="deleteHandle"></button>
+    <button class="thing-delete" @click="deleteHandle" v-show="!onThingsEditing"></button>
   </li>
 </template>
 
@@ -24,7 +24,7 @@
 
   export default{
     name: 'itemCard',
-    props: ['thing'],
+    props: ['thing', 'onThingsEditing'],
     data() {
       return {
         editing: false,
@@ -43,20 +43,20 @@
       },
       editHandle(){
         this.editing = true;
+        this.$emit('onThingEdit', true)
       },
       starHandle(){
         this.$emit('thingStar', this.thing)
       },
       handleDoneEdit(){
         this.editing = false;
+        this.$emit('onThingEdit', false);
         this.label !== '' ? this.$emit('thingEdit', {thing: this.thing, newLabel: this.label}) : this.handleCancelEdit
       },
       handleCancelEdit(){
         this.editing = false;
-        this.label = this.thing.label
-      },
-      handlePress(){
-        console.log('press');
+        this.label = this.thing.label;
+        this.$emit('onThingEdit', false);
       }
     },
     directives: {
@@ -84,7 +84,6 @@
       box-sizing border-box !important
       /* auto, since non-WebKit browsers doesn't support input styling */
       height 64px
-      /*height inherit*/
       position absolute
       top 0
       bottom 0

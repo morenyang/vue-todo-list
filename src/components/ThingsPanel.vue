@@ -14,10 +14,12 @@
             <item-card v-for="item in filters"
                        :thing="item"
                        :key="item.createDate"
+                       :onThingsEditing="onThingsEditing"
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
                        @thingEdit="thingEditHandle"
+                       @onThingEdit="handleOnThingEdit"
                        class="list-item"
             ></item-card>
           </transition-group>
@@ -71,7 +73,8 @@
         card: 'all',
         banner: '',
         placeholder: '',
-        editing: false
+        editing: false,
+        onThingsEditing: false
       }
     },
 
@@ -107,6 +110,9 @@
       },
       thingEditHandle(item){
         item.thing.label = item.newLabel
+      },
+      handleOnThingEdit(status){
+        this.onThingsEditing = status
       }
     },
 
