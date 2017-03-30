@@ -1,11 +1,13 @@
 <template>
   <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
-    <input class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <label :class="['thing-label', {star: thing.star}]"
+    <input v-show="!editing" class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
+    <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
            @dblclick="editHandle"
            @click="starHandle">
       {{thing.label}}
     </label>
+    <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
+           @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
     <button class="thing-delete" @click="deleteHandle"></button>
   </li>
 </template>
@@ -18,6 +20,15 @@
   export default{
     name: 'itemCard',
     props: ['thing'],
+    data() {
+      return {
+        editing: false,
+        label: ''
+      }
+    },
+    beforeMount(){
+      this.label = this.thing.label
+    },
     methods: {
       finishHandle(){
         this.$emit('thingFinish', this.thing)
@@ -26,10 +37,24 @@
         this.$emit('thingDelete', this.thing)
       },
       editHandle(){
-
+        this.editing = true;
       },
       starHandle(){
         this.$emit('thingStar', this.thing)
+      },
+      handleDoneEdit(){
+        this.editing = false;
+        this.$emit('thingEdit', {thing: this.thing, newLabel: this.label})
+      },
+      handleCancelEdit(){
+        this.editing = false;
+      }
+    },
+    directives: {
+      'todo-focus': function (el, value) {
+        if (value) {
+          el.focus()
+        }
       }
     }
   }
@@ -82,7 +107,7 @@
         }
       }
     }
-    .thing-label {
+    .thing-label, .thing-editing-input {
       margin -15px 0
       padding 15px 50px 15px 55px
       font-size 24px
@@ -99,6 +124,10 @@
         color #42b983
         font-weight 700
       }
+    }
+    .thing-editing-input {
+      border 1px solid #42b983
+      outline none
     }
     .thing-delete {
       position absolute
