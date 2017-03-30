@@ -1,11 +1,13 @@
 <template>
   <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
     <input v-show="!editing" class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
-           @dblclick="editHandle"
-           @click="starHandle">
-      {{thing.label}}
+    <v-touch @press="editHandle">
+      <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
+             @dblclick="editHandle"
+             @click="starHandle">
+        {{thing.label}}
     </label>
+    </v-touch>
     <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
            @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
     <button class="thing-delete" @click="deleteHandle"></button>
@@ -16,6 +18,9 @@
   /**
    * Created by MorenYang on 2017/3/13.
    */
+  import VueTouch from 'vue-touch'
+  import Vue from 'vue'
+  Vue.use(VueTouch, {name: 'v-touch'});
 
   export default{
     name: 'itemCard',
@@ -44,10 +49,14 @@
       },
       handleDoneEdit(){
         this.editing = false;
-        this.$emit('thingEdit', {thing: this.thing, newLabel: this.label})
+        this.label !== '' ? this.$emit('thingEdit', {thing: this.thing, newLabel: this.label}) : this.handleCancelEdit
       },
       handleCancelEdit(){
         this.editing = false;
+        this.label = this.thing.label
+      },
+      handlePress(){
+        console.log('press');
       }
     },
     directives: {
@@ -128,6 +137,10 @@
     .thing-editing-input {
       border 1px solid #42b983
       outline none
+      margin -19px 0 -16px
+      padding 19px 50px 15px 45px
+      border-radius 0 !important
+      box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
     }
     .thing-delete {
       position absolute

@@ -106,7 +106,6 @@
         this.editing = !this.editing
       },
       thingEditHandle(item){
-        console.log(item);
         item.thing.label = item.newLabel
       }
     },
