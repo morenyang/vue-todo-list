@@ -5,10 +5,10 @@
       <span class="things-edit" @click="editStatusHandle" v-show="filters !== 0">{{ editStatus }}</span>
     </div>
     <ul class="card-toggle">
-      <li @click="cardToggle(0)" :class="{active: (card === 'all')}">All</li>
-      <li @click="cardToggle(1)" :class="{active: (card === 'active')}">Active</li>
-      <li @click="cardToggle(2)" :class="{active: (card === 'star')}">Star</li>
-      <li @click="cardToggle(3)" :class="{active: (card === 'completed')}">Completed</li>
+      <li @click="cardToggle(0)" :class="[{active: (card === 'all')}]">All</li>
+      <li @click="cardToggle(1)" :class="[{active: (card === 'active')}]">Active</li>
+      <li @click="cardToggle(2)" :class="[{active: (card === 'star')}]">Star</li>
+      <li @click="cardToggle(3)" :class="[{active: (card === 'completed')}]">Completed</li>
     </ul>
   </div>
 </template>

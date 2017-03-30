@@ -17,6 +17,7 @@
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
+                       @thingEdit="thingEditHandle"
                        class="list-item"
             ></item-card>
           </transition-group>
@@ -103,6 +104,9 @@
       },
       editStatusHandle(){
         this.editing = !this.editing
+      },
+      thingEditHandle(item){
+        item.thing.label = item.newLabel
       }
     },
 
