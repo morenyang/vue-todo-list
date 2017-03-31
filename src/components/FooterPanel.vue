@@ -18,7 +18,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
   color = #aaa
   .footer {
-    padding 30px 0
+    padding 50px 0 30px
     text-align center
     color color
     font-family Roboto, Helvetica, Arial, sans-serif

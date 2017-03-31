@@ -1,7 +1,8 @@
 <template>
-  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
+  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}, {'not-moving': !moving}, {moving: moving}]"
+      :style="styleObject">
     <input v-show="!editing" class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <v-touch @press="editHandle">
+    <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" :pan-options="panOptions">
       <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
              @dblclick="editHandle"
              @click="starHandle">
@@ -28,7 +29,11 @@
     data() {
       return {
         editing: false,
-        label: ''
+        label: '',
+        panAllow: true,
+        panOptions: {direction: 'horizontal', threshold: 0},
+        styleObject: {'margin-left': 0 + 'px'},
+        moving: false
       }
     },
     beforeMount(){
@@ -42,6 +47,7 @@
         this.$emit('thingDelete', this.thing)
       },
       editHandle(){
+        this.panAllow = false;
         this.editing = true;
         this.$emit('onThingEdit', true)
       },
@@ -50,13 +56,32 @@
       },
       handleDoneEdit(){
         this.editing = false;
+        this.panAllow = true;
         this.$emit('onThingEdit', false);
         this.label !== '' ? this.$emit('thingEdit', {thing: this.thing, newLabel: this.label}) : this.handleCancelEdit
       },
       handleCancelEdit(){
         this.editing = false;
+        this.panAllow = true;
         this.label = this.thing.label;
         this.$emit('onThingEdit', false);
+      },
+      handlePanMove(event){
+        this.panAllow ? this.styleObject['margin-left'] = (event.offsetDirection === 4 ? 1 : -1) * event.distance + 'px' : this.styleObject['margin-left'] = '0px';
+        this.moving = true;
+      },
+      handlePanEnd(){
+        this.moving = false;
+        this.styleObject['margin-left'] = '0px';
+      }
+    },
+    watch: {
+      panAllow: {
+        handler(){
+          if (!this.panAllow) {
+            this.styleObject['margin-left'] = '0px';
+          }
+        }
       }
     },
     directives: {
@@ -75,8 +100,13 @@
     width 100%
     background white
     padding 15px 0
-    border none
     min-height 64px
+    border-color = #e6e6e6
+    border-left-color: border-color
+    border-right-color: border-color
+    &.not-moving {
+      transition all .3s ease-out
+    }
     .thing-checkbox {
       padding 12px 0
       text-align: center;
@@ -140,6 +170,7 @@
       padding 19px 50px 15px 45px
       border-radius 0 !important
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
+      z-index 3
     }
     .thing-delete {
       position absolute

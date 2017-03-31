@@ -102,6 +102,7 @@
         text-align center
         margin 0 3px
         color #bbb
+        transition all .3s ease-in-out
         &.active {
           color #42b983
           font-weight 700
