@@ -11,7 +11,7 @@
     </v-touch>
     <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
            @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
-    <button class="thing-delete" @click="deleteHandle" v-show="!onThingsEditing"></button>
+    <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
   </li>
 </template>
 
@@ -25,19 +25,23 @@
 
   export default{
     name: 'itemCard',
-    props: ['thing', 'onThingsEditing'],
+    props: ['thing'],
     data() {
       return {
         editing: false,
         label: '',
         panAllow: true,
         panOptions: {direction: 'horizontal', threshold: 0},
-        styleObject: {'margin-left': 0 + 'px'},
-        moving: false
+        styleObject: {'margin-left': 0 + 'px', opacity: 1},
+        moving: false,
+        elWidth: 0
       }
     },
     beforeMount(){
       this.label = this.thing.label
+    },
+    mounted(){
+      this.elWidth = this.$el.offsetWidth;
     },
     methods: {
       finishHandle(){
@@ -49,7 +53,6 @@
       editHandle(){
         this.panAllow = false;
         this.editing = true;
-        this.$emit('onThingEdit', true)
       },
       starHandle(){
         this.$emit('thingStar', this.thing)
@@ -57,22 +60,26 @@
       handleDoneEdit(){
         this.editing = false;
         this.panAllow = true;
-        this.$emit('onThingEdit', false);
         this.label !== '' ? this.$emit('thingEdit', {thing: this.thing, newLabel: this.label}) : this.handleCancelEdit
       },
       handleCancelEdit(){
         this.editing = false;
         this.panAllow = true;
         this.label = this.thing.label;
-        this.$emit('onThingEdit', false);
       },
       handlePanMove(event){
-        this.panAllow ? this.styleObject['margin-left'] = (event.offsetDirection === 4 ? 1 : -1) * event.distance + 'px' : this.styleObject['margin-left'] = '0px';
+        let distance = event.distance;
+        this.panAllow ? this.styleObject['margin-left'] = (event.offsetDirection === 4 ? 1 : -1) * distance + 'px' : this.styleObject['margin-left'] = '0px';
+        this.panAllow ? this.styleObject['opacity'] = (distance > (this.elWidth * 0.3) ? 1 - (distance - this.elWidth * 0.3) / (this.elWidth * 0.5 ) : 1) : this.styleObject['opacity'] = 1;
         this.moving = true;
       },
-      handlePanEnd(){
+      handlePanEnd(event){
         this.moving = false;
         this.styleObject['margin-left'] = '0px';
+        this.styleObject['opacity'] = 1;
+        if (event.distance > this.elWidth * 0.5) {
+          this.deleteHandle()
+        }
       }
     },
     watch: {
@@ -80,10 +87,12 @@
         handler(){
           if (!this.panAllow) {
             this.styleObject['margin-left'] = '0px';
+            this.styleObject['opacity'] = 1
           }
         }
       }
     },
+    styleObject: {},
     directives: {
       'todo-focus': function (el, value) {
         if (value) {
@@ -102,10 +111,15 @@
     padding 15px 0
     min-height 64px
     border-color = #e6e6e6
+    opacity: 1
     border-left-color: border-color
     border-right-color: border-color
     &.not-moving {
-      transition all .3s ease-out
+      transition all .3s ease-out, border 0s ease .3s
+    }
+    &.moving {
+      border-left-width 1px
+      border-right-width 1px
     }
     .thing-checkbox {
       padding 12px 0
@@ -166,8 +180,8 @@
     .thing-editing-input {
       border 1px solid #42b983
       outline none
-      margin -19px 0 -16px
-      padding 19px 50px 15px 45px
+      margin -20px 0px -15px
+      padding 19px 50px 15px 55px
       border-radius 0 !important
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
       z-index 3

@@ -14,12 +14,10 @@
             <item-card v-for="item in filters"
                        :thing="item"
                        :key="item.createDate"
-                       :onThingsEditing="onThingsEditing"
                        @thingFinish="finishHandle"
                        @thingDelete="deleteHandle"
                        @thingStar="starHandle"
                        @thingEdit="thingEditHandle"
-                       @onThingEdit="handleOnThingEdit"
                        class="list-item"
             ></item-card>
           </transition-group>
@@ -74,7 +72,6 @@
         banner: '',
         placeholder: '',
         editing: false,
-        onThingsEditing: false
       }
     },
 
@@ -111,9 +108,6 @@
       thingEditHandle(item){
         item.thing.label = item.newLabel
       },
-      handleOnThingEdit(status){
-        this.onThingsEditing = status
-      }
     },
 
     watch: {
@@ -192,10 +186,10 @@
     & li {
       position: relative;
       font-size: 24px;
-      border-bottom: 1px solid #ededed;
-    }
-    & li:last-child {
-      border-bottom: none;
+      border: 1px solid #ededed;
+      border-left-width 0
+      border-right-width 0
+      margin-top -1px
     }
     &.editing > li {
       @media screen and (max-width 767px) {
@@ -208,18 +202,21 @@
 
   .list-enter-active {
     transition: margin-top .3s ease-in-out;
+    z-index -999
   }
 
   .list-enter {
     opacity: 0;
     transform: translateY(-64px);
-    margin-top -64px
+    margin-top -64px !important
+    z-index -999
   }
 
   .list-leave-active {
-    transition margin-top .3s ease-in-out;
-    margin-top: -64px
+    transition margin-top .3s ease-in-out, opacity .2s ease-in-out;
+    margin-top: -64px !important
     opacity 0
+    z-index -999
   }
 
   .list-move {
