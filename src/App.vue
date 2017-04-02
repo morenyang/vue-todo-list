@@ -35,5 +35,5 @@
     overflow-y hidden
     #todo
       max-width 100vw
-      overflow hidden
+      overflow-x hidden
 </style>

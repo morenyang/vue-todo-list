@@ -9,7 +9,7 @@
                        :placeholder="placeholder"
                        @placeholderChanger="placeholderChanger"
           ></input-panel>
-          <transition-group :class="['things-list', {editing : this.editing}]" v-if="(things.length !== 0)"
+          <transition-group :class="['things-list']" v-if="(things.length !== 0)"
                             name="list" tag="ul">
             <item-card v-for="item in filters"
                        :thing="item"
@@ -26,9 +26,7 @@
                          :card="card"
                          :stars="stars"
                          :filters="filters.length"
-                         :editing="editing"
                          @cardToggle="cardToggleHandle"
-                         @editStatusHandle="editStatusHandle"
           ></control-panel>
         </div>
       </div>
@@ -57,7 +55,9 @@
       ItemCard,
       ControlPanel
     },
-
+    beforeCreate(){
+      Store.init();
+    },
     beforeMount(){
       this.things = Store.fetch() || [];
       this.bannerChanger();
@@ -71,7 +71,7 @@
         card: 'all',
         banner: '',
         placeholder: '',
-        editing: false,
+        editing: false
       }
     },
 
@@ -191,13 +191,6 @@
       border-right-width 0
       margin-top -1px
     }
-    &.editing > li {
-      @media screen and (max-width 767px) {
-        .thing-delete {
-          display block
-        }
-      }
-    }
   }
 
   .list-enter-active {
@@ -207,22 +200,27 @@
 
   .list-enter {
     opacity: 0;
-    transform: translateY(-64px);
-    margin-top -64px
+    margin-top -64px !important
     z-index -999
   }
 
+  .list-leave {
+    background white
+    transition background .2s ease
+  }
+
   .list-leave-active {
-    transition height .2s ease-in-out, margin-top .3s ease-in-out, opacity .2s ease-in-out;
+    transition height .2s ease-in-out, margin-top .3s ease-in-out, opacity .2s ease-in-out, background .2s ease;
     margin-top: -64px !important
     opacity 0
     z-index -999
     height 64px !important
     overflow-y: hidden
+    background white !important
   }
 
   .list-move {
-    transition: transform .4s ease-in-out;
+    transition: transform .4s ease-in-out !important
   }
 
 

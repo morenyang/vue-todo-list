@@ -2,7 +2,6 @@
   <div class="control-panel">
     <div class="control-panel-layout">
       <span class="things-count">{{ counts }} {{ pluralize }} left</span>
-      <span class="things-edit" @click="editStatusHandle" v-show="filters !== 0">{{ editStatus }}</span>
     </div>
     <ul class="card-toggle">
       <li @click="cardToggle(0)" :class="[{active: (card === 'all')}]">All</li>
@@ -21,7 +20,7 @@
   export default{
     name: 'controlPanel',
 
-    props: ['remaining', 'card', 'stars', 'editing','filters'],
+    props: ['remaining', 'card', 'stars', 'filters'],
 
     methods: {
       cardToggle(index){
@@ -41,9 +40,6 @@
           default:
             this.$emit('cardToggle', 'all')
         }
-      },
-      editStatusHandle(){
-        this.$emit('editStatusHandle', this.editing)
       }
     },
 
@@ -53,9 +49,6 @@
       },
       pluralize(){
         return this.card === 'star' ? parseInt(this.stars) <= 1 ? 'star' : 'stars' : parseInt(this.remaining) <= 1 ? 'item' : 'items'
-      },
-      editStatus(){
-        return this.editing ? 'Done' : 'Edit';
       }
     }
   }
