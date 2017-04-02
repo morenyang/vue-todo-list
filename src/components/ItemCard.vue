@@ -1,19 +1,20 @@
 <template>
-  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
-    <div class="item-layout" :class="[{'not-moving': !moving}, {moving: moving}]" :style="styleObject">
-      <input v-show="!editing && !moving" class="thing-checkbox" type="checkbox" :checked="thing.isFinished"
-             @click="finishHandle">
-      <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" :pan-options="panOptions">
-        <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
-               @dblclick="editHandle"
-               @click="starHandle">
-          {{thing.label}}
-    </label>
-      </v-touch>
-      <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
-             @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
-      <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
-    </div>
+  <li :class="['todo-thing', 'list-item', {finished: thing.isFinished}, {moving: moving}, {'not-moving': !moving}]"
+      :style="styleObject.layout">
+    <input v-show="!editing && !moving" class="thing-checkbox" type="checkbox" :checked="thing.isFinished"
+           @click="finishHandle">
+    <input v-show="moving" :class="['thing-moving-delete',{'allow-delete': deleteAllow}]" type="checkbox">
+    <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" @panstart="refreshElWidth"
+             :pan-options="panOptions">
+      <label v-show="!editing" :class="['thing-label', {star: thing.star}]" :style="styleObject.label"
+             @dblclick="editHandle"
+             @click="starHandle">
+        {{thing.label}}
+        </label>
+    </v-touch>
+    <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
+           @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
+    <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
   </li>
 </template>
 
@@ -26,7 +27,7 @@
   Vue.use(VueTouch, {name: 'v-touch'});
 
   // 设置删除的阈值
-  const deleteThreshold = 0.35;
+  const deleteThreshold = 0.4;
 
   export default{
     name: 'itemCard',
@@ -37,7 +38,7 @@
         label: '',
         panAllow: true,
         panOptions: {direction: 'horizontal', threshold: 0},
-        styleObject: {'margin-left': 0 + 'px', opacity: 1},
+        styleObject: {layout: {'margin-left': 0 + 'px'}, label: {opacity: 1}},
         moving: false,
         elWidth: 0,
         deleteAllow: false
@@ -75,33 +76,35 @@
       },
       handlePanMove(event){
         let distance = event.deltaX;
-        this.panAllow ? this.styleObject['margin-left'] = distance < 0 ? '-' + Math.sqrt(Math.abs(distance)) * 2.5 + 'px' : distance + 'px' : this.styleObject['margin-left'] = '0px';
-        this.panAllow ? this.styleObject['opacity'] = (distance > (this.elWidth * 0.3) ? 1 - (distance - this.elWidth * 0.3) / (this.elWidth * 0.5 ) : 1) : this.styleObject['opacity'] = 1;
+        this.panAllow ? this.styleObject.layout['margin-left'] = distance < 0 ? '-' + Math.sqrt(Math.abs(distance)) * 2.5 + 'px' : this.elWidth >= 640 ? Math.sqrt(Math.abs(distance)) * 2.5 + 'px' : distance + 'px' : this.styleObject.layout['margin-left'] = '0px';
+        this.elWidth >= 640 ? this.styleObject.label['opacity'] = 1 : this.panAllow ? this.styleObject.label['opacity'] = (distance > (this.elWidth * 0.3) ? 1 - (distance - this.elWidth * 0.3) / (this.elWidth * 0.5 ) : 1) : this.styleObject.label['opacity'] = 1;
         this.moving = true;
-        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
+        this.elWidth >= 640 ? this.deleteAllow = false : distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
       },
       handlePanEnd(event){
         let distance = event.deltaX;
         this.moving = false;
-        this.styleObject['margin-left'] = '0px';
-        this.styleObject['opacity'] = 1;
-        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
+        this.styleObject.layout['margin-left'] = '0px';
+        this.styleObject.label['opacity'] = 1;
+        this.elWidth >= 640 ? this.deleteAllow = false : distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
         if (this.deleteAllow) {
           this.deleteHandle()
         }
+      },
+      refreshElWidth(){
+        this.elWidth = this.$el.offsetWidth;
       }
     },
     watch: {
       panAllow: {
         handler(){
           if (!this.panAllow) {
-            this.styleObject['margin-left'] = '0px';
-            this.styleObject['opacity'] = 1
+            this.styleObject.layout['margin-left'] = '0px';
+            this.styleObject.label['opacity'] = 1
           }
         }
       }
     },
-    styleObject: {},
     directives: {
       'todo-focus': function (el, value) {
         if (value) {
@@ -119,28 +122,21 @@
     width 100%
     padding 15px 0
     min-height 64px
-    background #EEEEEE
-    .item-layout {
-      height 100%
-      width 100%
-      margin: -15px 0
-      padding 15px 0
-      border-style solid
-      border-width 0
-      background white
-      opacity: 1
-      border-left-color: border-color
-      border-right-color: border-color
-      &.not-moving {
-        transition all .3s ease-out, border 0s ease .3s
-      }
-      &.moving {
-        border-left-width 1px
-        border-right-width 1px
-      }
+    border-style solid
+    border-width 0
+    background white
+    opacity: 1
+    border-left-color: border-color
+    border-right-color: border-color
+    &.not-moving {
+      transition all .3s ease-out, border 0s ease .3s
     }
-
-    .thing-checkbox {
+    &.moving {
+      border-color border-color !important
+      border-left-width 1px
+      border-right-width 1px
+    }
+    .thing-checkbox, .thing-moving-delete {
       padding 12px 0
       text-align: center;
       width: 50px;
@@ -162,6 +158,8 @@
         padding 17px 0
         width 40px
       }
+    }
+    .thing-checkbox {
       &:after {
         content url("../assets/img/checkbox.svg")
         @media screen and (max-width 767px) {
@@ -178,9 +176,24 @@
         }
       }
     }
+    .thing-moving-delete {
+      margin-left 2px
+      opacity 0
+      transition opacity .25s ease-in-out
+      &.allow-delete {
+        opacity 1
+      }
+      &:after {
+        content url("../assets/img/delete.svg")
+        @media screen and (max-width 767px) {
+          content url("../assets/img/sm_delete.svg")
+        }
+      }
+    }
+
     .thing-label, .thing-editing-input {
       margin -15px 0
-      padding 15px 50px 15px 55px
+      padding 15px 15px 15px 55px
       font-size 24px
       line-height 34px
       vertical-align middle
@@ -196,6 +209,7 @@
         font-weight 700
       }
     }
+
     .thing-editing-input {
       border 1px solid #42b983
       outline none
@@ -204,7 +218,11 @@
       border-radius 0 !important
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
       z-index 3
+      @media screen and (min-width 768px) {
+        padding-left 55px
+      }
     }
+
     .thing-delete {
       position absolute
       color #af5b5e
@@ -231,16 +249,19 @@
         content: '×'
       }
     }
+
     &.finished {
       .thing-label {
         color #ededed
       }
     }
-    &:hover > .thing-delete {
+
+    &:hover .thing-delete {
       display block
       @media screen and (max-width 767px) {
         display none
       }
     }
+
   }
 </style>

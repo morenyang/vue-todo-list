@@ -2,6 +2,31 @@
 
 > A simplify todo list
 
+一个简单的 **todo** Web App 
+
+使用**vue**构建
+
+Demo地址 [todos](yangteng.me/todo)
+
+*线上版本可能会稍落后于仓库版本*
+
+## todos Version 1.0
+**终于到 version 1.0.0了**
+
+撒花！ 求star
+
+
+#### 这一次的更新
+- 优化了很多细节
+- 添加了删除的时候会出现图标提示
+- 在大屏幕版本中禁用了部分手势操作
+- 移除了Control面板中的编辑按钮
+
+如果以后有空，可能会添加远程同步的功能
+
+如果发现有bug可以提交issues
+
+
 ## License
 MIT
 
