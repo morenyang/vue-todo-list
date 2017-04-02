@@ -1,16 +1,19 @@
 <template>
   <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
-    <input v-show="!editing" class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <v-touch @press="editHandle">
-      <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
-             @dblclick="editHandle"
-             @click="starHandle">
-        {{thing.label}}
+    <div class="item-layout" :class="[{'not-moving': !moving}, {moving: moving}]" :style="styleObject">
+      <input v-show="!editing && !moving" class="thing-checkbox" type="checkbox" :checked="thing.isFinished"
+             @click="finishHandle">
+      <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" :pan-options="panOptions">
+        <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
+               @dblclick="editHandle"
+               @click="starHandle">
+          {{thing.label}}
     </label>
-    </v-touch>
-    <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
-           @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
-    <button class="thing-delete" @click="deleteHandle"></button>
+      </v-touch>
+      <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
+             @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
+      <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
+    </div>
   </li>
 </template>
 
@@ -22,17 +25,29 @@
   import Vue from 'vue'
   Vue.use(VueTouch, {name: 'v-touch'});
 
+  // 设置删除的阈值
+  const deleteThreshold = 0.35;
+
   export default{
     name: 'itemCard',
     props: ['thing'],
     data() {
       return {
         editing: false,
-        label: ''
+        label: '',
+        panAllow: true,
+        panOptions: {direction: 'horizontal', threshold: 0},
+        styleObject: {'margin-left': 0 + 'px', opacity: 1},
+        moving: false,
+        elWidth: 0,
+        deleteAllow: false
       }
     },
     beforeMount(){
       this.label = this.thing.label
+    },
+    mounted(){
+      this.elWidth = this.$el.offsetWidth;
     },
     methods: {
       finishHandle(){
@@ -42,6 +57,7 @@
         this.$emit('thingDelete', this.thing)
       },
       editHandle(){
+        this.panAllow = false;
         this.editing = true;
       },
       starHandle(){
@@ -49,16 +65,43 @@
       },
       handleDoneEdit(){
         this.editing = false;
+        this.panAllow = true;
         this.label !== '' ? this.$emit('thingEdit', {thing: this.thing, newLabel: this.label}) : this.handleCancelEdit
       },
       handleCancelEdit(){
         this.editing = false;
-        this.label = this.thing.label
+        this.panAllow = true;
+        this.label = this.thing.label;
       },
-      handlePress(){
-        console.log('press');
+      handlePanMove(event){
+        let distance = event.deltaX;
+        this.panAllow ? this.styleObject['margin-left'] = distance < 0 ? '-' + Math.sqrt(Math.abs(distance)) * 2.5 + 'px' : distance + 'px' : this.styleObject['margin-left'] = '0px';
+        this.panAllow ? this.styleObject['opacity'] = (distance > (this.elWidth * 0.3) ? 1 - (distance - this.elWidth * 0.3) / (this.elWidth * 0.5 ) : 1) : this.styleObject['opacity'] = 1;
+        this.moving = true;
+        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
+      },
+      handlePanEnd(event){
+        let distance = event.deltaX;
+        this.moving = false;
+        this.styleObject['margin-left'] = '0px';
+        this.styleObject['opacity'] = 1;
+        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
+        if (this.deleteAllow) {
+          this.deleteHandle()
+        }
       }
     },
+    watch: {
+      panAllow: {
+        handler(){
+          if (!this.panAllow) {
+            this.styleObject['margin-left'] = '0px';
+            this.styleObject['opacity'] = 1
+          }
+        }
+      }
+    },
+    styleObject: {},
     directives: {
       'todo-focus': function (el, value) {
         if (value) {
@@ -70,13 +113,33 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  border-color = #e6e6e6
   .todo-thing {
     color #2c3e50
     width 100%
-    background white
     padding 15px 0
-    border none
     min-height 64px
+    background #EEEEEE
+    .item-layout {
+      height 100%
+      width 100%
+      margin: -15px 0
+      padding 15px 0
+      border-style solid
+      border-width 0
+      background white
+      opacity: 1
+      border-left-color: border-color
+      border-right-color: border-color
+      &.not-moving {
+        transition all .3s ease-out, border 0s ease .3s
+      }
+      &.moving {
+        border-left-width 1px
+        border-right-width 1px
+      }
+    }
+
     .thing-checkbox {
       padding 12px 0
       text-align: center;
@@ -84,7 +147,6 @@
       box-sizing border-box !important
       /* auto, since non-WebKit browsers doesn't support input styling */
       height 64px
-      /*height inherit*/
       position absolute
       top 0
       bottom 0
@@ -137,10 +199,11 @@
     .thing-editing-input {
       border 1px solid #42b983
       outline none
-      margin -19px 0 -16px
+      margin -20px 0px -15px
       padding 19px 50px 15px 45px
       border-radius 0 !important
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
+      z-index 3
     }
     .thing-delete {
       position absolute

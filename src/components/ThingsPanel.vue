@@ -71,7 +71,7 @@
         card: 'all',
         banner: '',
         placeholder: '',
-        editing: false
+        editing: false,
       }
     },
 
@@ -107,7 +107,7 @@
       },
       thingEditHandle(item){
         item.thing.label = item.newLabel
-      }
+      },
     },
 
     watch: {
@@ -186,11 +186,10 @@
     & li {
       position: relative;
       font-size: 24px;
-      border-bottom: 1px solid #ededed;
-
-    }
-    & li:last-child {
-      border-bottom: none;
+      border: 1px solid #ededed;
+      border-left-width 0
+      border-right-width 0
+      margin-top -1px
     }
     &.editing > li {
       @media screen and (max-width 767px) {
@@ -203,18 +202,23 @@
 
   .list-enter-active {
     transition: margin-top .3s ease-in-out;
+    z-index -999
   }
 
   .list-enter {
     opacity: 0;
     transform: translateY(-64px);
     margin-top -64px
+    z-index -999
   }
 
   .list-leave-active {
-    transition margin-top .3s ease-in-out;
-    margin-top: -64px
+    transition height .2s ease-in-out, margin-top .3s ease-in-out, opacity .2s ease-in-out;
+    margin-top: -64px !important
     opacity 0
+    z-index -999
+    height 64px !important
+    overflow-y: hidden
   }
 
   .list-move {

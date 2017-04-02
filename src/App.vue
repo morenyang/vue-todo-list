@@ -31,9 +31,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color #f4f4f4
-    #app
-      font-family: 'Avenir', Helvetica, Arial, sans-serif
-      color: #2c3e50
-      background-color #f4f4f4
-      min-height inherit
+    max-width 100vw
+    overflow-y hidden
+    #todo
+      max-width 100vw
+      overflow hidden
 </style>
