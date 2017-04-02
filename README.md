@@ -6,7 +6,7 @@
 
 使用**vue**构建
 
-Demo地址 [todos](yangteng.me/todo)
+Demo地址 [todos](http://yangteng.me/todo)
 
 *线上版本可能会稍落后于仓库版本*
 
