@@ -208,15 +208,17 @@
   .list-enter {
     opacity: 0;
     transform: translateY(-64px);
-    margin-top -64px !important
+    margin-top -64px
     z-index -999
   }
 
   .list-leave-active {
-    transition margin-top .3s ease-in-out, opacity .2s ease-in-out;
+    transition height .2s ease-in-out, margin-top .3s ease-in-out, opacity .2s ease-in-out;
     margin-top: -64px !important
     opacity 0
     z-index -999
+    height 64px !important
+    overflow-y: hidden
   }
 
   .list-move {

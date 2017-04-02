@@ -1,17 +1,19 @@
 <template>
-  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}, {'not-moving': !moving}, {moving: moving}]"
-      :style="styleObject">
-    <input v-show="!editing" class="thing-checkbox" type="checkbox" :checked="thing.isFinished" @click="finishHandle">
-    <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" :pan-options="panOptions">
-      <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
-             @dblclick="editHandle"
-             @click="starHandle">
-        {{thing.label}}
+  <li :class="['todo-thing', 'list-item',{finished: thing.isFinished}]">
+    <div class="item-layout" :class="[{'not-moving': !moving}, {moving: moving}]" :style="styleObject">
+      <input v-show="!editing && !moving" class="thing-checkbox" type="checkbox" :checked="thing.isFinished"
+             @click="finishHandle">
+      <v-touch @press="editHandle" @panend="handlePanEnd" v-on:panmove="handlePanMove" :pan-options="panOptions">
+        <label v-show="!editing" :class="['thing-label', {star: thing.star}]"
+               @dblclick="editHandle"
+               @click="starHandle">
+          {{thing.label}}
     </label>
-    </v-touch>
-    <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
-           @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
-    <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
+      </v-touch>
+      <input v-show="editing" class="thing-editing-input" v-model="label" @blur="handleDoneEdit"
+             @keyup.enter="handleDoneEdit" @keyup.esc="handleCancelEdit" v-todo-focus="editing"/>
+      <button class="thing-delete" @click="deleteHandle" v-show="!editing"></button>
+    </div>
   </li>
 </template>
 
@@ -22,6 +24,9 @@
   import VueTouch from 'vue-touch'
   import Vue from 'vue'
   Vue.use(VueTouch, {name: 'v-touch'});
+
+  // 设置删除的阈值
+  const deleteThreshold = 0.35;
 
   export default{
     name: 'itemCard',
@@ -34,7 +39,8 @@
         panOptions: {direction: 'horizontal', threshold: 0},
         styleObject: {'margin-left': 0 + 'px', opacity: 1},
         moving: false,
-        elWidth: 0
+        elWidth: 0,
+        deleteAllow: false
       }
     },
     beforeMount(){
@@ -68,16 +74,19 @@
         this.label = this.thing.label;
       },
       handlePanMove(event){
-        let distance = event.distance;
-        this.panAllow ? this.styleObject['margin-left'] = (event.offsetDirection === 4 ? 1 : -1) * distance + 'px' : this.styleObject['margin-left'] = '0px';
+        let distance = event.deltaX;
+        this.panAllow ? this.styleObject['margin-left'] = distance < 0 ? '-' + Math.sqrt(Math.abs(distance)) * 2.5 + 'px' : distance + 'px' : this.styleObject['margin-left'] = '0px';
         this.panAllow ? this.styleObject['opacity'] = (distance > (this.elWidth * 0.3) ? 1 - (distance - this.elWidth * 0.3) / (this.elWidth * 0.5 ) : 1) : this.styleObject['opacity'] = 1;
         this.moving = true;
+        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
       },
       handlePanEnd(event){
+        let distance = event.deltaX;
         this.moving = false;
         this.styleObject['margin-left'] = '0px';
         this.styleObject['opacity'] = 1;
-        if (event.distance > this.elWidth * 0.5) {
+        distance > this.elWidth * deleteThreshold ? this.deleteAllow = true : this.deleteAllow = false;
+        if (this.deleteAllow) {
           this.deleteHandle()
         }
       }
@@ -104,23 +113,33 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  border-color = #e6e6e6
   .todo-thing {
     color #2c3e50
     width 100%
-    background white
     padding 15px 0
     min-height 64px
-    border-color = #e6e6e6
-    opacity: 1
-    border-left-color: border-color
-    border-right-color: border-color
-    &.not-moving {
-      transition all .3s ease-out, border 0s ease .3s
+    background #EEEEEE
+    .item-layout {
+      height 100%
+      width 100%
+      margin: -15px 0
+      padding 15px 0
+      border-style solid
+      border-width 0
+      background white
+      opacity: 1
+      border-left-color: border-color
+      border-right-color: border-color
+      &.not-moving {
+        transition all .3s ease-out, border 0s ease .3s
+      }
+      &.moving {
+        border-left-width 1px
+        border-right-width 1px
+      }
     }
-    &.moving {
-      border-left-width 1px
-      border-right-width 1px
-    }
+
     .thing-checkbox {
       padding 12px 0
       text-align: center;
@@ -181,7 +200,7 @@
       border 1px solid #42b983
       outline none
       margin -20px 0px -15px
-      padding 19px 50px 15px 55px
+      padding 19px 50px 15px 45px
       border-radius 0 !important
       box-shadow inset 0 -2px 1px rgba(0, 0, 0, 0.03)
       z-index 3
